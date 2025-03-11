@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <style>
+        /* Existing styles... */
+          /* General Styles */
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            overflow-x: hidden; /* Prevent horizontal scroll on animations */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            padding: 0 20px;
+            margin: 0 auto;
+        }
+
+        /* Title Styles */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 1s ease-out; /* Fade in from top animation */
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--toggle-bg);
+            color: var(--toggle-color);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            animation: fadeIn 1s ease-out; /* Fade in animation */
+        }
+
+        /* Grid Styles */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+            width: 100%;
+            animation: fadeIn 1s ease-out; /* Fade in animation */
+        }
+
+        /* Project Card Styles */
+        .project-card {
+            border: 1px solid var(--card-border-color);
+            border-radius: 20px; /* Increased for a softer look */
+            padding: 30px; /* Increased for better spacing */
+            background: var(--card-bg);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* More natural transition */
+            overflow: hidden;
+            position: relative;
+            opacity: 0; /* Start hidden for animation */
+            animation: slideIn 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; /* Slide in animation */
+            /* Add animation-delay to each card */
+        }
+
+        .project-card:nth-child(odd) {
+            animation-delay: 0.2s;
+        }
+
+        .project-card:nth-child(even) {
+            animation-delay: 0.4s;
+        }
+
+        /* Hover Effects */
+        .project-card:hover {
+            transform: scale(1.05); /* Slightly enlarge on hover */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+            /* Add a subtle glowing effect */
+            background: var(--card-bg);
+            /* background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)); */
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: calc(100% + 20px);
+            height: calc(100% + 20px);
+            background: linear-gradient(135deg, rgba(66, 165, 245, 0.2), rgba(13, 169, 255, 0.2));  /* Gradient highlight */
+            border-radius: 20px; /* Match card radius */
+            opacity: 0;
+            z-index: -1; /* Behind the card */
+            transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .project-card:hover::before {
+            opacity: 1; /* Show gradient highlight on hover */
+        }
+
+
+        /* Title Styles */
+        h3 {
+            color: var(--title-color);
+            font-size: 1.8rem; /* Slightly larger title */
+            margin-bottom: 15px;
+            transition: color 0.2s ease;
+        }
+
+        .project-card:hover h3 {
+            color: #007bff;
+            text-shadow: 1px 1px 2px rgba(0, 123, 255, 0.3); /* Add subtle glow */
+        }
+
+        /* Description Styles */
+        p {
+            color: var(--text-color);
+            line-height: 1.7; /* Slightly more space */
+            margin-bottom: 20px;
+        }
+
+        /* Link Styles */
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: 600; /* Slightly bolder link */
+            transition: color 0.2s ease, transform 0.2s ease;
+            display: inline-block; /* Allow transform */
+        }
+
+        a:hover {
+            color: #0056b3;
+            transform: translateX(5px); /* Slight movement on hover */
+        }
+
+        /* Icon Styles */
+        h3::before {
+            margin-right: 10px; /* Increased spacing */
+            vertical-align: middle;
+            font-size: 1.4rem; /* Larger icon */
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px); /* Slide in from left */
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .portfolio-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg, 
+                rgba(0,123,255,0.1), 
+                rgba(0,123,255,0.3)
+            );
+            transform: rotate(-15deg);
+            z-index: -1;
+        }
+
+        .profile-image {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--primary-color);
+            margin-right: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .profile-content {
+            flex-grow: 1;
+        }
+
+        .profile-title {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .profile-subtitle {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .skills-section {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+
+        .skill-column {
+            flex: 1;
+            padding: 20px;
+            background: rgba(0,123,255,0.05);
+            border-radius: 10px;
+            margin: 0 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .skill-column:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .skill-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .skill-list {
+            list-style-type: none;
+            text-align: center;
+        }
+
+        .skill-list li {
+            margin: 10px 0;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-image {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+
+            .skills-section {
+                flex-direction: column;
+            }
+
+            .skill-column {
+                margin: 10px 0;
+            }
+        }
+        :root {
+            --primary-color: #080b0e;
+            --background-color: #0f0b0b;
+            --text-color: #333;
+            --accent-color: #6c757d;
+        }
+
+        body.dark-mode {
+            --background-color: #121212;
+            --text-color: #e0e0e0;
+            --primary-color: #040608;
+            --accent-color: #aaa;
+        }
+
+        :root {
+            --primary-color: #020305;
+            --background-overlay: rgba(17, 16, 16, 0.85);
+            --text-color: #333;
+            --accent-color: #6c757d;
+        }
+
+        body.dark-mode {
+            --background-overlay: rgba(18,18,18,0.9);
+            --text-color: #e0e0e0;
+            --primary-color: #050b0f;
+            --accent-color: #aaa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("back.jpg");
+            background-size: cover;
+            background-position: center;
+           
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+           
+            z-index: -1;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid black;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .portfolio-container {
+          
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--background-overlay);
+            min-height: 100vh;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 50px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .profile-image {
+            
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--primary-color);
+            margin-right: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .profile-content {
+            flex-grow: 1;
+        }
+
+        .profile-title {
+            
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .profile-subtitle {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .skills-section {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+
+        .skill-column {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid black;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            margin: 0 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .skill-column:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .skill-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .skill-list {
+            list-style-type: none;
+            text-align: center;
+        }
+
+        .skill-list li {
+            margin: 10px 0;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-image {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+
+            .skills-section {
+                flex-direction: column;
+            }
+
+            .skill-column {
+                margin: 10px 0;
+            }
+        }
+        :root {
+            --primary-color: #080a0c;
+            --background-overlay: rgba(255,255,255,0.7);
+            --text-color: #333;
+            --accent-color: #6c757d;
+        }
+
+        body.dark-mode {
+            --background-overlay: rgba(18,18,18,0.8);
+            --text-color: #e0e0e0;
+            --primary-color: #000000;
+            --accent-color: #aaa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+       
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .portfolio-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--background-overlay);
+            min-height: 100vh;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 50px;
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .profile-image {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--primary-color);
+            margin-right: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        .profile-content {
+            flex-grow: 1;
+        }
+
+        .profile-title {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .profile-subtitle {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        .skills-section {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+
+        .skill-column {
+            flex: 1;
+            padding: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            margin: 0 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .skill-column:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .skill-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .skill-list {
+            list-style-type: none;
+            text-align: center;
+        }
+
+        .skill-list li {
+            margin: 10px 0;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-image {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+
+            .skills-section {
+                flex-direction: column;
+            }
+
+            .skill-column {
+                margin: 10px 0;
+            }
+        }
+
+        /* Dark Mode Styles (Default: Light Mode) */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --card-bg: #fff;
+            --card-border-color: #e0e0e0;
+            --title-color: #333;
+            --toggle-bg: #ddd;
+            --toggle-color: #333;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --card-bg: #252525;
+            --card-border-color: #444;
+            --title-color: #f0f0f0;
+            --toggle-bg: #333;
+            --toggle-color: #f0f0f0;
+        }
+
+        
+        /* New background animation styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-image: url('https://static.pexels.com/photos/414171/pexels-photo-414171.jpeg');
+            background-size: cover;
+            -webkit-animation: slidein 510s;
+            animation: slidein 510s;
+            -webkit-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            -webkit-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
+            -webkit-animation-direction: alternate;
+            animation-direction: alternate;
+        }
+
+        @-webkit-keyframes slidein {
+            from {background-position: top; background-size: 3000px;}
+            to {background-position: -100px 0px; background-size: 2750px;}
+        }
+
+        @keyframes slidein {
+            from {background-position: top; background-size: 3000px;}
+            to {background-position: -100px 0px; background-size: 2750px;}
+        }
+
+        /* Adjust portfolio container to be more translucent to see background */
+        .portfolio-container {
+            background: var(--background-overlay);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Rest of the existing HTML remains the same -->
+    <button class="theme-toggle" aria-label="Toggle Theme">💡</button>
+
+    <div class="portfolio-container">
+        <!-- Profile header and skills section from original HTML -->
+        <div class="profile-header">
+            <img src="profile.jpg" alt="Profile" class="profile-image">
+            <div class="profile-content">
+                <h1 class="profile-title">C MANOJ KUMAR</h1>
+                <h2 class="profile-subtitle">Cybersecurity Student | CEH certified | PC enthusiast | Frontend Developer</h2>
+                <p>Passionate about creating secure, innovative solutions that push the boundaries of technology. Specializing in network security, machine learning, and cutting-edge web applications.</p>
+            </div>
+        </div>
+
+        <div class="skills-section">
+            <!-- Skills columns from original HTML -->
+            <div class="skill-column">
+                <h3 class="skill-title">Programming</h3>
+                <ul class="skill-list">
+                    <li>Python</li>
+                    <li>C/C++(Basics)</li>
+                    <li>JavaScript(basics)</li>
+                    <li>Node.js</li>
+                    <li>HTML/CSS</li>
+                </ul>
+            </div>
+
+            <div class="skill-column">
+                <h3 class="skill-title">Security Tools</h3>
+                <ul class="skill-list">
+                    <li>SSH Honeypots</li>
+                    <li>Penetration Testing</li>
+                    <li>Network Analysis</li>
+                    <li>Machine Learning Security</li>
+                </ul>
+            </div>
+
+            <div class="skill-column">
+                <h3 class="skill-title">Technologies</h3>
+                <ul class="skill-list">
+                    <li>AWS</li>
+                    <li>GitHub</li>
+                    <li>Socket.IO</li>
+                    <li>APIs & Integrations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Projects</h1>
+        <div class="project-grid">
+             <!-- Project Cards (Same as before) -->
+             <div class="project-card">
+                <h3>🎥 KINGPLAY VIDEO STREAMER</h3>
+                <p>An open-source video streaming application integrated with AWS S3 and CloudFront for secure streaming.Built using
+HTML, CSS, JavaScript, and Electron.js.Provides a seamless experience with minimal buffering and local downloads.</p>
+                <a href="https://github.com/kingslayer458/KINGPLAY-VIDEO-STREAMER">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>🔐 SSH Login Using Brute Force</h3>
+                <p>Developed a Python-based SSH brute-force tool to test remote access security by cracking sensitive credentials using
+IP addresses. It automates credential testing with user-defined wordlists, scans for hidden SSH ports, and executes
+commands upon successful authentication.</p>
+                <a href="https://github.com/kingslayer458/SSH-login-using-brute-force">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>🕵️ SSH Honeypot with Web-Based Log Viewer</h3>
+                <p>A Python honeypot system that logs SSH attack attempts with a web interface.</p>
+                <a href="https://github.com/kingslayer458/SSH-Honeypot-with-Web-Based-Log-Viewer">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>🎮 Game Searcher Using Steam API</h3>
+                <p>A JavaScript tool to search for pc games using the Steam API.</p>
+                <a href="https://github.com/kingslayer458/game-searcher-using-steam-api">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>🔍 Steam Game Searcher</h3>
+                <p>A PC games searcher tool using the RAWG API.</p>
+                <a href="https://github.com/kingslayer458/steam-game-searcher">View Project →</a>
+            </div>
+
+
+            <div class="project-card">
+                <h3>🏠 Hostel Management System</h3>
+                <p>A Python-based hostel management system.</p>
+                <a href="https://github.com/kingslayer458/hostel-management-system">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>💣 Fork Bomb</h3>
+                <p>A Python script demonstrating a fork bomb attack.</p>
+                <a href="https://github.com/kingslayer458/fork-bomb">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>📂 File Sharing System</h3>
+                <p>A file-sharing system built with file.io API.</p>
+                <a href="https://github.com/kingslayer458/file-sharing-system">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>🌤️ Weather Application</h3>
+                <p>A JavaScript-based weather application.</p>
+                <a href="https://github.com/kingslayer458/weather-application">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>📝 Personal Portfolio</h3>
+                <p>A final version of my personal HTML portfolio.</p>
+                <a href="https://github.com/kingslayer458/personal-portfolio">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>🎮 Red Dead Redemption 2 Wallpaper Website</h3>
+                <p>An HTML website dedicated to RDR2 wallpapers.</p>
+                <a href="https://github.com/kingslayer458/RED-DEAD-REDEMPTION-2-WALLPAPER-WEBSITE">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>🎶 Lana Del Rey Radio</h3>
+                <p>A radio project featuring Lana Del Rey's music.</p>
+                <a href="https://github.com/kingslayer458/lana-del-ray">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>🚨 Cowrie Honeypot Alert Using Nodemailer and Twilio</h3>
+                <p>Developed a real-time monitoring system for Cowrie SSH logs, automating email and SMS alerts using Nodemailer
+and Twilio. Used Chokidar for log tracking and PM2 to run the process in the background. </p>
+                <a href="https://github.com/kingslayer458/Cowrie-Honeypot-Alert-Using-Nodemailer-And-Twilio">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>🤖 SSH Honeypot with Machine Learning</h3>
+                <p>A Python honeypot system that uses honeypot log data as a dataset with machine learning for analysis.</p>
+                <a href="https://github.com/kingslayer458/Ssh-Honeypot-With-Machine-Learning">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>💬 Real-Time Chat App with Socket.IO</h3>
+                <p>A real-time chat application using Socket.IO.</p>
+                <a href="https://github.com/kingslayer458/A-Real-time-Chat-App-with-Socket.IO">View Project →</a>
+            </div>
+
+            <div class="project-card">
+                <h3>📊 Enhanced GitHub Activity Viewer using GitHub API</h3>
+                <p>A tool to view GitHub activity in an enhanced format.</p>
+                <a href="https://github.com/kingslayer458/Enhanced-GitHub-Activity-Viewer-using-github-api">View Project →</a>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+
+    <script>
+        // Existing JavaScript remains the same
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            const isDarkMode = body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            themeToggle.textContent = isDarkMode ? '💡' : '💡';
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+                themeToggle.textContent = '💡';
+            }
+        });
+        
+    const smoothScrollLinks = document.querySelectorAll('a[href^="#"]');
+    for (const anchor of smoothScrollLinks) {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            const targetId = this.getAttribute("href").substring(1);
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 20,
+                    behavior: "smooth"
+                });
+            }
+        });
+    }
+    </script>
+</body>
+</html>
