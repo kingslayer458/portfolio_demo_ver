@@ -8,7 +8,7 @@
 A modern, responsive personal portfolio website showcasing my projects and skills as a cybersecurity professional and frontend developer.
 
 ![Portfolio Preview](folio.png)
-
+![Portfolio Preview](folio2.png)
 ## ✨ Features
 
 - **Responsive Design** - Looks great on all devices from mobile to desktop
